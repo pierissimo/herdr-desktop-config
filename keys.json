@@ -1,0 +1,6 @@
+{
+  "terminal": {
+    "ctrl-shift-f": "terminal.search",
+    "ctrl-alt-f": "my-tabs.claude-find"
+  }
+}
