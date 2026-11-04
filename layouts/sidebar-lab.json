@@ -1,7 +1,7 @@
 {
   "id": "root",
   "cloned_from": {
-    "name": "my-main",
+    "name": "main",
     "version": "0.1.12"
   },
   "type": "row",
