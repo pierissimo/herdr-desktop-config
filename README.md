@@ -8,14 +8,13 @@ They're renamed copies of Herdr's own files, so Herdr updates never overwrite th
 
 ```sh
 git clone https://github.com/pierissimo/herdr-desktop-config
-cd herdr-desktop-config && ./install.sh
+cd herdr-desktop-config
+./install.sh
 ```
 
 Then press **Ctrl+Shift+L** in Herdr and pick `sidebar-lab`. The script needs `jq` to merge the key bindings.
 
 ## Sidebar
-
-<img src="screenshots/my-sidebar.png" alt="Sidebar in priority mode" width="260" align="right">
 
 `my-sidebar` puts spaces and agents in one panel.
 
@@ -24,7 +23,7 @@ Then press **Ctrl+Shift+L** in Herdr and pick `sidebar-lab`. The script needs `j
 - **Custom** mode keeps your order, which you set by dragging. **Priority** mode sorts by urgency, then by recent activity. Switch modes from the icon in the header.
 - Agents idle for more than a day fold into an "N inactive" row.
 
-<br clear="right">
+<img src="screenshots/my-sidebar.png" alt="Sidebar in priority mode" width="260">
 
 ## Tabs
 
