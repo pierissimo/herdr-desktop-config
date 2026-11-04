@@ -9,18 +9,10 @@ They're renamed copies of Herdr's own files, so Herdr updates never overwrite th
 Paste this into a coding agent (Claude Code, Codex…) on the machine running Herdr:
 
 ```text
-Read ~/.config/herdr-app/AGENTS.md, then install the Herdr customizations from
-https://github.com/pierissimo/herdr-desktop-config:
-
-1. Clone the repo and copy every folder in mods/ into ~/.config/herdr-app/mods/,
-   and layouts/sidebar-lab.json into ~/.config/herdr-app/layouts/.
-2. Merge the repo's keys.json into ~/.config/herdr-app/keys.json. Keep my existing
-   bindings, and ask me before replacing one that uses the same key.
-3. Run `herdr-app check` on each copied mod and fix anything it reports.
-4. Quote selection in mods/my-menu reads and writes the clipboard with wl-paste and
-   wl-copy. If this machine has no Wayland, switch it to this platform's clipboard
-   tools.
-5. Switch Herdr to the sidebar-lab layout and tell me what changed.
+Read ~/.config/herdr-app/AGENTS.md, then install mods from
+https://github.com/pierissimo/herdr-desktop-config into my Herdr.
+Ask me which ones I want, merge keys.json without overwriting my bindings,
+and adapt anything platform-specific to this machine.
 ```
 
 Prefer doing it by hand? Run `./install.sh` from a clone. It needs `jq`.
