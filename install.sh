@@ -11,7 +11,7 @@ for m in mods/*/; do
   cp -r "$m". "$DEST/mods/$name/"
   echo "mod     $name"
 done
-cp layouts/*.json "$DEST/layouts/" && echo "layouts my-main, sidebar-lab"
+cp layouts/*.json "$DEST/layouts/" && echo "layout  sidebar-lab"
 
 if command -v jq >/dev/null; then
   [ -f "$DEST/keys.json" ] || echo '{}' > "$DEST/keys.json"
@@ -24,4 +24,4 @@ fi
 if command -v herdr-app >/dev/null; then
   for m in mods/*/; do herdr-app check "$DEST/mods/$(basename "$m")" >/dev/null || echo "check failed: $m"; done
 fi
-echo "Done. In Herdr pick the layout with Cmd/Ctrl+Shift+L (my-main or sidebar-lab)."
+echo "Done. In Herdr pick the layout with Ctrl+Shift+L: sidebar-lab."

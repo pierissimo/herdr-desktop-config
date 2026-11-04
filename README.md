@@ -1,6 +1,6 @@
 # herdr-desktop-config
 
-Mods, layouts and key bindings for the [Herdr desktop app](https://github.com/herdrdev/herdr-app).
+A layout, mods and key bindings for the [Herdr desktop app](https://github.com/herdrdev/herdr-app).
 
 Everything here uses Herdr's mod and layout APIs: they're copies of Herdr's own mods and layouts with different names, so Herdr updates never overwrite them. Tested on Herdr 0.1.13.
 
@@ -17,12 +17,6 @@ The tab bar, with:
 - **Claude auto-resume.** After a restart, each tab that was running Claude reruns its original command with `--resume <session>`. It stores the session ID, folder and command as terminal labels, which herdr-core keeps across restarts. A Claude you quit yourself isn't resumed. Each Herdr start writes a log to `~/.config/herdr-app/.claude-resume.log`.
 - **Claude transcript search.** The `my-tabs.claude-find` command opens Claude's transcript view and its search.
 
-### my-agents
-
-The agents panel, rearranged: the status icon on the left, the tab name on top, and the space under it in grey.
-
-<img src="screenshots/my-agents.png" alt="Agents panel" width="280">
-
 ### my-menu
 
 The right-click menu, plus **Quote selection**: it pastes the selected text into the input as a `> ` markdown quote.
@@ -31,25 +25,22 @@ Requires `wl-paste` and `wl-copy` (wl-clipboard), so for now Quote selection onl
 
 ### my-sidebar
 
-An experimental sidebar that puts spaces and agents in one panel:
+A sidebar that puts spaces and agents in one panel:
 
 <img src="screenshots/my-sidebar.png" alt="Combined sidebar, priority ordering" width="280">
 
 - Agents grouped under their space, and spaces can be collapsed.
 - An attention bar counting agents that need you, have finished or are running. Click it to jump to the next one.
-- Custom ordering (yours, draggable) or priority ordering (by urgency, then recent activity).
+- Two modes, switched from the icon in its header: custom ordering (yours, draggable) or priority ordering (by urgency, then recent activity).
 - Agents idle for more than a day are tucked behind an "N inactive" row. A space whose agents are all inactive collapses.
-
-Used by the `sidebar-lab` layout.
 
 ### tab-notes
 
 Markdown notes for each tab, from [ozcberkay/herdr-coban](https://github.com/ozcberkay/herdr-coban), unmodified.
 
-## Layouts
+## Layout
 
-- `my-main`: Herdr's default layout, using the mods above.
-- `sidebar-lab`: `my-main` with `my-sidebar` in place of the separate spaces and agents lists.
+`sidebar-lab` is Herdr's default layout with `my-sidebar` in place of the separate spaces and agents lists, `my-tabs` as the tab bar, `my-menu` as the right-click menu and `tab-notes` in the side panel.
 
 ## Keys
 
@@ -65,12 +56,12 @@ cd herdr-desktop-config
 ./install.sh
 ```
 
-Then, in Herdr, press **Ctrl+Shift+L** and pick `my-main`, or `sidebar-lab` for the combined sidebar.
+Then, in Herdr, press **Ctrl+Shift+L** and pick `sidebar-lab`.
 
 ## Notes
 
 - **Herdr updates:** each mod's `mod.json` records the upstream version it was copied from (`cloned_from`). After an update, diff upstream `defaults/mods/<name>` between the two tags and port the fixes into these copies.
-- **Updating this repo:** copy `~/.config/herdr-app/mods/my-*`, `mods/tab-notes` and `layouts/{my-main,sidebar-lab}.json` back into the repo, leaving out `gpui-kit.d.ts` and `jsconfig.json`.
+- **Updating this repo:** copy `~/.config/herdr-app/mods/my-*`, `mods/tab-notes` and `layouts/sidebar-lab.json` back into the repo, leaving out `gpui-kit.d.ts` and `jsconfig.json`.
 
 ## License
 

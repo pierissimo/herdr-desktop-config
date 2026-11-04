@@ -1,4 +1,4 @@
-mods/my-tabs, my-agents, my-menu, my-sidebar and layouts/* are modified copies of
+mods/my-tabs, my-menu, my-sidebar and layouts/* are modified copies of
 files shipped with Herdr (https://github.com/herdrdev/herdr-app), Apache-2.0.
 mods/tab-notes is from https://github.com/ozcberkay/herdr-coban, Apache-2.0
 (icons from Lucide, see mods/tab-notes/LICENSE-lucide).
