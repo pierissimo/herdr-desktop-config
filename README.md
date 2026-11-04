@@ -10,6 +10,8 @@ Everything here uses Herdr's mod and layout APIs: they're copies of Herdr's own 
 
 The tab bar, with:
 
+![Tab bar with a note marker and the Notes button](screenshots/my-tabs.png)
+
 - **Automatic tab names.** A tab takes its agent's session name (Claude Code, Codex…) and follows it when it changes. A name you type yourself is never overwritten.
 - **Notes.** A Notes button in the panel bar, and a marker on tabs that have a note. Needs `tab-notes`.
 - **Claude auto-resume.** After a restart, each tab that was running Claude reruns its original command with `--resume <session>`. It stores the session ID, folder and command as terminal labels, which herdr-core keeps across restarts. A Claude you quit yourself isn't resumed. Each Herdr start writes a log to `~/.config/herdr-app/.claude-resume.log`.
@@ -18,6 +20,8 @@ The tab bar, with:
 ### my-agents
 
 The agents panel, rearranged: the status icon on the left, the tab name on top, and the space under it in grey.
+
+<img src="screenshots/my-agents.png" alt="Agents panel" width="280">
 
 ### my-menu
 
@@ -28,6 +32,8 @@ Requires `wl-paste` and `wl-copy` (wl-clipboard), so for now Quote selection onl
 ### my-sidebar
 
 An experimental sidebar that puts spaces and agents in one panel:
+
+<img src="screenshots/my-sidebar.png" alt="Combined sidebar, priority ordering" width="280">
 
 - Agents grouped under their space, and spaces can be collapsed.
 - An attention bar counting agents that need you, have finished or are running. Click it to jump to the next one.
