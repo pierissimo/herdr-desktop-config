@@ -42,6 +42,10 @@ Prefer doing it by hand? Run `./install.sh` from a clone. It needs `jq`.
 
 `my-menu` adds **Quote selection**, which pastes the selected text into the input as a `> ` quote. It needs `wl-clipboard`.
 
+![Right-click menu with Quote selection](screenshots/my-menu-1.png)
+
+![The selection pasted into the input as a quote](screenshots/my-menu-2.png)
+
 ## Keys
 
 | Key | Action |
