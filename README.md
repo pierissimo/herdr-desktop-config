@@ -40,7 +40,10 @@ Prefer doing it by hand? Run `./install.sh` from a clone. It needs `jq`.
 
 ## Right-click menu
 
-`my-menu` adds **Quote selection**, which pastes the selected text into the input as a `> ` quote. It needs `wl-clipboard`.
+`my-menu` adds **Quote selection**, which pastes the selected text into the input as a `> ` quote.
+
+- **Linux:** select, then right-click. Needs `wl-clipboard`.
+- **macOS:** there's no primary selection, so select, press `cmd-c`, then right-click.
 
 ![Right-click menu with Quote selection](screenshots/my-menu-1.png)
 
@@ -48,10 +51,14 @@ Prefer doing it by hand? Run `./install.sh` from a clone. It needs `jq`.
 
 ## Keys
 
-| Key | Action |
-|---|---|
-| `ctrl-shift-f` | Herdr's find bar |
-| `ctrl-alt-f` | Claude's transcript search |
+| Linux | macOS | Action |
+|---|---|---|
+| `ctrl-shift-f` | `cmd-f` | Herdr's find bar |
+| `ctrl-alt-f` | `cmd-alt-f` | Claude's transcript search |
+
+`install.sh` merges `keys.json` on Linux and `keys.macos.json` on macOS.
+
+**macOS tip:** Claude Code's Option shortcuts (`option-p` opens the model picker) need Option to act as Alt. Herdr does that by default only on the US, US International, ABC and ABC-India layouts. On any other layout, set it in Settings → Keyboard, or in `settings.json`: `"option_as_alt": "left"`. The right Option key keeps typing accents.
 
 ## Updating
 

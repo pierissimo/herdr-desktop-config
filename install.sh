@@ -13,15 +13,21 @@ for m in mods/*/; do
 done
 cp layouts/*.json "$DEST/layouts/" && echo "layout  sidebar-lab"
 
+# macOS already has cmd-f for the find bar, and uses cmd- shortcuts.
+KEYS=keys.json
+[ "$(uname -s)" = Darwin ] && KEYS=keys.macos.json
+
 if command -v jq >/dev/null; then
   [ -f "$DEST/keys.json" ] || echo '{}' > "$DEST/keys.json"
-  jq -s '.[0] * .[1]' "$DEST/keys.json" keys.json > "$DEST/keys.json.new" && mv "$DEST/keys.json.new" "$DEST/keys.json"
-  echo "keys    merged"
+  jq -s '.[0] * .[1]' "$DEST/keys.json" "$KEYS" > "$DEST/keys.json.new" && mv "$DEST/keys.json.new" "$DEST/keys.json"
+  echo "keys    merged ($KEYS)"
 else
-  echo "keys    jq not found: merge keys.json into $DEST/keys.json by hand"
+  echo "keys    jq not found: merge $KEYS into $DEST/keys.json by hand"
 fi
 
 if command -v herdr-app >/dev/null; then
   for m in mods/*/; do herdr-app check "$DEST/mods/$(basename "$m")" >/dev/null || echo "check failed: $m"; done
 fi
-echo "Done. In Herdr pick the layout with Ctrl+Shift+L: sidebar-lab."
+SWITCH=Ctrl+Shift+L
+[ "$(uname -s)" = Darwin ] && SWITCH=Cmd+Shift+L
+echo "Done. In Herdr pick the layout with $SWITCH: sidebar-lab."

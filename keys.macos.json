@@ -1,0 +1,5 @@
+{
+  "terminal": {
+    "cmd-alt-f": "my-tabs.claude-find"
+  }
+}

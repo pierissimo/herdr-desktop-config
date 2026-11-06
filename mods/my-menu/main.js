@@ -5,7 +5,7 @@
 
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { run, props, closeOverlay, openOverlay, theme, keys, terminals, spaces, panes, exec, notify } from "herdr";
+import { run, props, closeOverlay, openOverlay, theme, keys, terminals, spaces, panes, exec, notify, window as herdrWindow } from "herdr";
 import { toQuote } from "./quote.js";
 
 // Where a space is now: its first terminal's live folder, else where it was made.
@@ -119,21 +119,30 @@ export default class Menu extends View {
   // find nothing. The paste goes through the clipboard, which keeps the quote.
   // (No check that the text came from this terminal: hc read waits seconds right
   // after a click in the terminal.)
+  // macOS has no primary selection, so there it quotes the clipboard: cmd-c first.
   quote(target, cx) {
     if (this.quoting) return;
     this.quoting = true;
+    const mac = herdrWindow().platform === "macos";
     cx.spawn(async () => {
       const close = () => closeOverlay(props()?.overlay);
       try {
-        const sel = await exec("wl-paste", ["--primary", "--no-newline", "--type", "text/plain;charset=utf-8"]).catch(() => null);
+        const sel = await (mac
+          ? exec("pbpaste", [])
+          : exec("wl-paste", ["--primary", "--no-newline", "--type", "text/plain;charset=utf-8"])
+        ).catch(() => null);
         const quoted = toQuote(sel?.code === 0 ? sel.stdout : "");
         if (!quoted) {
           close();
-          notify({ title: "Nothing selected", body: "Select text in the terminal, then right-click it.", level: "info", timeout: 3500 });
+          const body = mac
+            ? "Select text and press cmd-c, then right-click and choose Quote selection."
+            : "Select text in the terminal, then right-click it.";
+          notify({ title: "Nothing selected", body, level: "info", timeout: 3500 });
           return;
         }
+        if (mac) await exec("sh", ["-c", 'printf %s "$1" | pbcopy', "sh", quoted]);
         // wl-copy keeps a helper holding stdout/stderr open; detach them or exec never returns.
-        await exec("sh", ["-c", 'wl-copy -- "$1" >/dev/null 2>&1', "sh", quoted]);
+        else await exec("sh", ["-c", 'wl-copy -- "$1" >/dev/null 2>&1', "sh", quoted]);
         close();
         run("pane.focus", { pane: target.pane });
         run("terminal.paste");

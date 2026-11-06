@@ -32,6 +32,13 @@ function baseArgv(argv) {
 // fish, bash and zsh all read single quotes this way for these strings.
 const quote = s => (/^[\w@%+=:,./-]+$/.test(s) ? s : `'${s.replace(/'/g, "'\\''")}'`);
 
+// `ps -o etime` ([[dd-]hh:]mm:ss) in seconds. Linux and macOS both have etime;
+// macOS lacks etimes.
+const elapsed = s => {
+  const m = (s ?? "").trim().match(/^(?:(\d+)-)?(?:(\d+):)?(\d+):(\d+)$/);
+  return m ? (+(m[1] ?? 0)) * 86400 + (+(m[2] ?? 0)) * 3600 + +m[3] * 60 + +m[4] : NaN;
+};
+
 const ours = t => t.state === "live" && t.labels?.["herdr.space"] && !t.address.includes("/");
 
 export class ClaudeResume {
@@ -70,7 +77,7 @@ export class ClaudeResume {
       const l = t.labels ?? {};
       if (!l["claude.session"] || !isShell(t.foreground) || this.running.has(t.address)) continue;
       const pid = t.foreground?.pid ?? t.pid;
-      const age = Number((await exec("ps", ["-o", "etimes=", "-p", String(pid)])).stdout.trim());
+      const age = elapsed((await exec("ps", ["-o", "etime=", "-p", String(pid)])).stdout);
       const shellStart = Date.now() - age * 1000;
       if (!age || !(shellStart > Number(l["claude.at"] || Infinity))) {
         done.push(`${t.address}: kept (shell older than its Claude record)`);
