@@ -354,9 +354,10 @@ export default class Spaces extends View {
   // its terminal started if that was after tracking began (a new agent is fresh;
   // one that was already running is unknown, so it counts as untouched).
   lastActive(a) {
-    // A Claude with a known transcript: its last message, or a later look at it.
+    // A Claude with a known transcript: its last message, the same time its row
+    // shows, so the order matches what you read. Looking at it doesn't count.
     const msg = this.lastMsg?.get(a.address);
-    if (msg) return Math.max(msg, this.activity[a.address]?.look ?? 0);
+    if (msg) return msg;
     const at = this.activity[a.address]?.at;
     if (at) return at;
     this.created ??= new Map();
