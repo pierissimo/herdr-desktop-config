@@ -107,10 +107,41 @@ export default class Spaces extends View {
     // only when its answer could have changed (see `due`).
     cx.timer.every(250, (cx) => this.checkNew(cx));
     // Durations on agent rows ("5m") change once a minute.
-    cx.timer.every(30000, (cx) => cx.notify());
+    this.lastMsg = new Map(); // agent address -> its conversation's last message (ms)
+    this.refreshLastMsg(cx);
+    cx.timer.every(30000, (cx) => { this.refreshLastMsg(cx); cx.notify(); });
+  }
+
+  // When each local Claude last exchanged a message, from its transcript: the
+  // terminal's claude.session / claude.cwd labels (my-tabs/claude-resume.js) name
+  // the file. Herdr's changed_at restarts with Herdr, and a resume after a reboot
+  // looks like activity there; the transcript doesn't.
+  async refreshLastMsg(cx) {
+    if (this.readingMsgs) return;
+    this.readingMsgs = true;
+    this.msgDue = false;
+    try {
+      const terms = new Map(terminals().map(t => [t.address, t]));
+      const found = new Map();
+      for (const a of agents()) {
+        const l = terms.get(a.address)?.labels ?? {};
+        if (a.address.includes("/") || !l["claude.session"] || !l["claude.cwd"]) continue;
+        const file = `.claude/projects/${l["claude.cwd"].replace(/[^a-zA-Z0-9]/g, "-")}/${l["claude.session"]}.jsonl`;
+        const r = await exec("sh", ["-c", 'f="$HOME/$1"; [ -f "$f" ] && tac "$f" | jq -rn \'first(inputs | select(.type == "user" or .type == "assistant") | .timestamp // empty)\'', "sh", file]);
+        const ms = Date.parse(r.stdout.trim());
+        if (ms) found.set(a.address, ms);
+      }
+      this.lastMsg = found;
+      cx.notify();
+    } catch {
+      // keep the last answer
+    } finally {
+      this.readingMsgs = false;
+    }
   }
 
   checkNew(cx) {
+    if (this.msgDue) this.refreshLastMsg(cx);
     const now = Date.now();
     const sp = spaces();
     for (const s of sp) if (!this.shown.has(s.id)) this.born[s.id] ??= now;
@@ -300,12 +331,15 @@ export default class Spaces extends View {
       // Looking at an agent is activity too.
       if (a.focused && this.activity[a.address]?.s === s && now - (this.activity[a.address].at ?? 0) > 60000) {
         this.activity[a.address].at = now;
+        this.activity[a.address].look = now;
         dirty = true;
         continue;
       }
       if (this.activity[a.address]?.s === s) continue;
+      this.msgDue = true; // a turn started or ended: its transcript moved
+      const look = this.activity[a.address]?.look;
       // First sighting after a start isn't activity: keep any older record's time.
-      this.activity[a.address] = { s, at: this.activity[a.address] ? now : this.activity[a.address]?.at ?? 0 };
+      this.activity[a.address] = { s, at: this.activity[a.address] ? now : this.activity[a.address]?.at ?? 0, ...(look ? { look } : {}) };
       dirty = true;
     }
     if (!dirty) return;
@@ -320,6 +354,9 @@ export default class Spaces extends View {
   // its terminal started if that was after tracking began (a new agent is fresh;
   // one that was already running is unknown, so it counts as untouched).
   lastActive(a) {
+    // A Claude with a known transcript: its last message, or a later look at it.
+    const msg = this.lastMsg?.get(a.address);
+    if (msg) return Math.max(msg, this.activity[a.address]?.look ?? 0);
     const at = this.activity[a.address]?.at;
     if (at) return at;
     this.created ??= new Map();
@@ -592,7 +629,9 @@ export default class Spaces extends View {
   agentRow(a, tab, t) {
     const hot = a.status === "working" || a.status === "blocked" || a.status === "done";
     const color = t[a.status] ?? t.dim;
-    const since = a.status === "working" ? tab.working_since : tab.changed_at;
+    // Idle / done: the conversation's last message when known (a restart or a
+    // resume isn't activity), else Herdr's last state change.
+    const since = a.status === "working" ? tab.working_since : this.lastMsg.get(a.address) ?? tab.changed_at;
     return h_flex()
       .id(`agent-${a.address}`)
       .relative()
